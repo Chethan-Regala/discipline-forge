@@ -10,9 +10,9 @@
   "scope": "/",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/og-image.png",
       "sizes": "any",
-      "type": "image/x-icon",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
@@ -36,7 +36,7 @@
       "short_name": "Habits",
       "description": "Quick access to today's habit tracking",
       "url": "/",
-      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
+      "icons": [{ "src": "/og-image.png", "sizes": "96x96" }]
     }
   ]
 }
