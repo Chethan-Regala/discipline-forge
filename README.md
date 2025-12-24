@@ -62,7 +62,25 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Quick Deploy Options:
+
+1. **Vercel** (Recommended):
+   ```bash
+   npm i -g vercel
+   vercel
+   ```
+
+2. **Netlify**:
+   ```bash
+   npm i -g netlify-cli
+   netlify deploy --prod
+   ```
+
+3. **See DEPLOYMENT.md** for detailed deployment instructions including:
+   - Vercel, Netlify, GitHub Pages setup
+   - Environment variables configuration
+   - PWA setup and mobile installation
+   - Production optimizations
 
 ## Can I connect a custom domain to my Lovable project?
 

@@ -6,7 +6,9 @@ interface SleepChartProps {
 }
 
 const SleepChart = ({ entries }: SleepChartProps) => {
-  const data = entries.slice(-30).map(entry => ({
+  // Optimize: Only show last 30 days for performance, but can handle full year
+  const recentEntries = entries.length > 30 ? entries.slice(-30) : entries;
+  const data = recentEntries.map(entry => ({
     date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     hours: entry.sleepHours,
     optimal: entry.sleepHours >= 6 && entry.sleepHours <= 7,
@@ -14,9 +16,9 @@ const SleepChart = ({ entries }: SleepChartProps) => {
 
   if (data.length === 0) {
     return (
-      <div className="p-6 bg-card rounded-xl border border-border">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Sleep Tracking</h3>
-        <div className="h-48 flex items-center justify-center text-muted-foreground">
+      <div className="p-4 sm:p-6 bg-card rounded-xl border border-border">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Sleep Tracking</h3>
+        <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
           Start tracking to see your sleep data
         </div>
       </div>
@@ -24,23 +26,28 @@ const SleepChart = ({ entries }: SleepChartProps) => {
   }
 
   return (
-    <div className="p-6 bg-card rounded-xl border border-border">
-      <h3 className="text-lg font-semibold text-foreground mb-4">Sleep Tracking (Last 30 Days)</h3>
+    <div className="p-4 sm:p-6 bg-card rounded-xl border border-border">
+      <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Sleep Tracking (Last 30 Days)</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <ComposedChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 30 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
             <XAxis 
               dataKey="date" 
               stroke="hsl(var(--muted-foreground))" 
               fontSize={10}
               tickLine={false}
+              angle={-45}
+              textAnchor="end"
+              height={60}
+              interval="preserveStartEnd"
             />
             <YAxis 
               stroke="hsl(var(--muted-foreground))" 
               fontSize={10}
               tickLine={false}
               domain={[0, 12]}
+              width={35}
             />
             <Tooltip 
               contentStyle={{ 

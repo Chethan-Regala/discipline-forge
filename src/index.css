@@ -118,5 +118,54 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    /* Prevent text selection on mobile for better UX */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    /* Larger touch targets for mobile */
+    button, a, input[type="checkbox"], input[type="number"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Better spacing on mobile */
+    .space-y-6 > * + * {
+      margin-top: 1.25rem;
+    }
+    
+    /* Prevent zoom on input focus (iOS) */
+    input[type="number"],
+    input[type="text"],
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+
+  /* Touch-friendly interactions */
+  @media (hover: none) and (pointer: coarse) {
+    /* Mobile touch devices */
+    button:hover {
+      /* Remove hover effects on touch devices */
+    }
+    
+    /* Better tap feedback */
+    button:active {
+      transform: scale(0.98);
+      transition: transform 0.1s;
+    }
+  }
+
+  /* Safe area insets for notched devices */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+    }
   }
 }

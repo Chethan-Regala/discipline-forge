@@ -23,36 +23,43 @@ interface HabitItemProps {
     min?: number;
     max?: number;
     step?: number;
+    isEditable?: boolean;
   };
 }
 
-const HabitItem = ({ icon, label, checked, onChange, disabled, numericInput }: HabitItemProps) => (
-  <div className="flex items-center justify-between py-3 px-4 rounded-lg bg-secondary/50 hover:bg-secondary/70 transition-colors">
-    <div className="flex items-center gap-3">
-      <Checkbox 
-        checked={checked} 
-        onCheckedChange={onChange}
-        disabled={disabled}
-        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-      />
-      <span className="text-muted-foreground">{icon}</span>
-      <Label className="text-foreground cursor-pointer">{label}</Label>
+const HabitItem = ({ icon, label, checked, onChange, disabled, numericInput }: HabitItemProps) => {
+  // For numeric inputs, the input should be enabled if isEditable is true
+  // The checkbox is just a visual indicator for numeric-only fields
+  const inputDisabled = numericInput ? !numericInput.isEditable : disabled;
+  
+  return (
+    <div className="flex items-center justify-between py-3 sm:py-3 px-3 sm:px-4 rounded-lg bg-secondary/50 active:bg-secondary/70 hover:bg-secondary/70 transition-colors gap-2 touch-manipulation min-h-[48px]">
+      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+        <Checkbox 
+          checked={checked} 
+          onCheckedChange={onChange}
+          disabled={disabled}
+          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary flex-shrink-0"
+        />
+        <span className="text-muted-foreground flex-shrink-0">{icon}</span>
+        <Label className="text-foreground cursor-pointer text-sm sm:text-base truncate">{label}</Label>
+      </div>
+      {numericInput && (
+        <Input
+          type="number"
+          value={numericInput.value || ''}
+          onChange={(e) => numericInput.onChange(parseFloat(e.target.value) || 0)}
+          placeholder={numericInput.placeholder}
+          disabled={inputDisabled}
+          min={numericInput.min}
+          max={numericInput.max}
+          step={numericInput.step}
+          className="w-16 sm:w-20 h-8 text-center bg-background border-border flex-shrink-0"
+        />
+      )}
     </div>
-    {numericInput && (
-      <Input
-        type="number"
-        value={numericInput.value || ''}
-        onChange={(e) => numericInput.onChange(parseFloat(e.target.value) || 0)}
-        placeholder={numericInput.placeholder}
-        disabled={disabled}
-        min={numericInput.min}
-        max={numericInput.max}
-        step={numericInput.step}
-        className="w-20 h-8 text-center bg-background border-border"
-      />
-    )}
-  </div>
-);
+  );
+};
 
 interface SectionProps {
   title: string;
@@ -74,10 +81,10 @@ const Section = ({ title, icon, children }: SectionProps) => (
 
 const HabitChecklist = ({ entry, onUpdate, isEditable }: HabitChecklistProps) => {
   return (
-    <div className="space-y-6 p-6 bg-card rounded-xl border border-border">
-      <h2 className="text-xl font-semibold text-foreground">Daily Habits</h2>
+    <div className="space-y-6 p-4 sm:p-6 bg-card rounded-xl border border-border">
+      <h2 className="text-lg sm:text-xl font-semibold text-foreground">Daily Habits</h2>
       
-      <div className="space-y-6">
+      <div className="space-y-5 sm:space-y-6">
         {/* Sleep */}
         <Section title="Sleep" icon={<Moon size={16} />}>
           <HabitItem
@@ -93,6 +100,7 @@ const HabitChecklist = ({ entry, onUpdate, isEditable }: HabitChecklistProps) =>
               min: 0,
               max: 24,
               step: 0.5,
+              isEditable,
             }}
           />
         </Section>
@@ -155,6 +163,7 @@ const HabitChecklist = ({ entry, onUpdate, isEditable }: HabitChecklistProps) =>
               min: 0,
               max: 50,
               step: 1,
+              isEditable,
             }}
           />
         </Section>
@@ -174,6 +183,7 @@ const HabitChecklist = ({ entry, onUpdate, isEditable }: HabitChecklistProps) =>
               min: 0,
               max: 12,
               step: 0.5,
+              isEditable,
             }}
           />
         </Section>

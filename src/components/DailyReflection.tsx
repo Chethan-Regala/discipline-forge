@@ -9,15 +9,15 @@ interface DailyReflectionProps {
 
 const DailyReflection = ({ value, onChange, isEditable }: DailyReflectionProps) => {
   return (
-    <div className="p-6 bg-card rounded-xl border border-border">
+    <div className="p-4 sm:p-6 bg-card rounded-xl border border-border">
       <div className="flex items-center gap-2 mb-4">
-        <PenLine size={20} className="text-muted-foreground" />
-        <h2 className="text-xl font-semibold text-foreground">End-of-Day Reflection</h2>
+        <PenLine size={18} className="text-muted-foreground flex-shrink-0" />
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground">End-of-Day Reflection</h2>
       </div>
       
       <div className="space-y-4">
         <div>
-          <label className="text-sm text-muted-foreground block mb-2">
+          <label className="text-xs sm:text-sm text-muted-foreground block mb-2">
             What did I do right today? What must improve tomorrow?
           </label>
           <Textarea
@@ -25,7 +25,7 @@ const DailyReflection = ({ value, onChange, isEditable }: DailyReflectionProps) 
             onChange={(e) => onChange(e.target.value)}
             disabled={!isEditable}
             placeholder="Reflect honestly on your day..."
-            className="min-h-[120px] bg-background border-border resize-none"
+            className="min-h-[120px] bg-background border-border resize-none text-sm sm:text-base"
           />
         </div>
       </div>

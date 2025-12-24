@@ -8,6 +8,7 @@ import SleepChart from '@/components/charts/SleepChart';
 import HabitPieChart from '@/components/charts/HabitPieChart';
 import StudyBarChart from '@/components/charts/StudyBarChart';
 import YearlyHeatmap from '@/components/charts/YearlyHeatmap';
+import NotificationSettings from '@/components/NotificationSettings';
 
 const Index = () => {
   const {
@@ -39,11 +40,11 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 pb-16">
+    <div className="min-h-screen bg-background safe-area-inset">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pb-20 sm:pb-16 pt-2 sm:pt-4">
         <IdentityHeader />
         
-        <main className="space-y-8 mt-8">
+        <main className="space-y-6 sm:space-y-8 mt-6 sm:mt-8">
           {/* Daily Score */}
           <DisciplineScore 
             score={currentEntry.disciplineScore} 
@@ -63,7 +64,7 @@ const Index = () => {
               Analytics & Progress
             </h2>
             
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2">
               <SleepChart entries={allEntries} />
               <HabitPieChart weekEntries={weekEntries} monthEntries={monthEntries} />
             </div>
@@ -81,12 +82,15 @@ const Index = () => {
           />
           
           {/* Footer */}
-          <footer className="text-center text-xs text-muted-foreground pt-8 border-t border-border">
+          <footer className="text-center text-xs text-muted-foreground pt-6 sm:pt-8 border-t border-border">
             <p>2026 Discipline OS • Built for long-term consistency</p>
             <p className="mt-1 italic">"The man who conquers himself is greater than the one who conquers a thousand battles."</p>
           </footer>
         </main>
       </div>
+      
+      {/* Notification Settings Button */}
+      <NotificationSettings />
     </div>
   );
 };
