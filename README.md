@@ -1,22 +1,25 @@
-# Welcome to your Lovable project
+# Discipline OS 2026
 
-## Project info
+A personal habit tracking and discipline management system built with React, TypeScript, and Vite.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Project Overview
+
+Discipline OS 2026 is a comprehensive habit tracking application designed to help you build consistency and discipline through daily habit tracking, analytics, and reflection.
+
+## Features
+
+- 📊 **Daily Habit Tracking**: Track 13 key habits including sleep, exercise, meditation, nutrition, study, and more
+- 📈 **Analytics & Charts**: Visualize your progress with sleep charts, habit completion pie charts, study productivity, and yearly heatmap
+- 🔔 **Daily Notifications**: Get reminded at 9 PM every day to track your habits
+- 📱 **PWA Support**: Install as an app on your mobile device
+- ☁️ **Cloud Sync**: Optional Supabase integration for cloud storage
+- 📝 **Daily Reflection**: End-of-day journaling for self-improvement
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repo and start developing locally.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -82,10 +85,21 @@ This project is built with:
    - PWA setup and mobile installation
    - Production optimizations
 
-## Can I connect a custom domain to my Lovable project?
+## Technologies
 
-Yes, you can!
+This project is built with:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **Vite** - Fast build tool and dev server
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - UI components
+- **Recharts** - Data visualization
+- **Supabase** - Optional cloud database
+- **PWA** - Progressive Web App support
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Documentation
+
+- See `USER_GUIDE.md` (local) for complete user documentation
+- See `SUPABASE_SETUP.md` (local) for database setup
+- See `DEPLOYMENT.md` (local) for deployment instructions
