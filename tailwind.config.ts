@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'SF Pro Display', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,6 +59,22 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        chart: {
+          sleep: "hsl(var(--chart-sleep))",
+          exercise: "hsl(var(--chart-exercise))",
+          nutrition: "hsl(var(--chart-nutrition))",
+          study: "hsl(var(--chart-study))",
+          spiritual: "hsl(var(--chart-spiritual))",
+          discipline: "hsl(var(--chart-discipline))",
         },
       },
       borderRadius: {
