@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 interface NotificationState {
   permission: NotificationPermission;
@@ -13,6 +13,7 @@ export const useNotifications = () => {
     permission: 'default',
     enabled: false,
   });
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Check notification permission and saved preference
   useEffect(() => {
@@ -27,115 +28,126 @@ export const useNotifications = () => {
     }
   }, []);
 
+  // Clear existing timers
+  const clearTimers = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
+
   // Request notification permission
   const requestPermission = useCallback(async (): Promise<boolean> => {
     if (!('Notification' in window)) {
-      console.warn('This browser does not support notifications');
       return false;
     }
 
     if (Notification.permission === 'granted') {
-      setNotificationState({ permission: 'granted', enabled: true });
-      localStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
       return true;
     }
 
     if (Notification.permission === 'denied') {
-      alert('Notifications are blocked. Please enable them in your browser settings.');
       return false;
     }
 
     const permission = await Notification.requestPermission();
-    const granted = permission === 'granted';
-    
-    setNotificationState({ 
-      permission, 
-      enabled: granted 
-    });
-    
-    if (granted) {
-      localStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
+    return permission === 'granted';
+  }, []);
+
+  // Show notification with professional styling
+  const showNotification = useCallback((title: string, options?: NotificationOptions) => {
+    if (Notification.permission !== 'granted') {
+      return null;
     }
     
-    return granted;
+    try {
+      const notification = new Notification(title, {
+        icon: '/og-image.png',
+        badge: '/og-image.png',
+        image: '/og-image.png',
+        requireInteraction: false,
+        silent: false,
+        timestamp: Date.now(),
+        ...options,
+      });
+      
+      // Professional behavior: auto-close after 8 seconds
+      setTimeout(() => {
+        notification.close();
+      }, 8000);
+      
+      // Focus app when notification is clicked
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
+      
+      return notification;
+    } catch (error) {
+      return null;
+    }
   }, []);
 
   // Enable notifications
   const enableNotifications = useCallback(async () => {
     const granted = await requestPermission();
     if (granted) {
-      // Send a test notification
-      showNotification('Notifications Enabled!', {
-        body: 'You will receive a reminder at 9 PM every day to track your habits.',
-        icon: '/favicon.ico',
-        tag: 'notification-enabled',
+      localStorage.setItem(NOTIFICATION_STORAGE_KEY, 'true');
+      setNotificationState({ permission: 'granted', enabled: true });
+      
+      // Professional welcome notification
+      showNotification('Discipline OS', {
+        body: 'Daily reminders enabled. You\'ll get notified at 9 PM.',
+        tag: 'welcome',
       });
     }
     return granted;
-  }, [requestPermission]);
+  }, [requestPermission, showNotification]);
 
   // Disable notifications
   const disableNotifications = useCallback(() => {
     localStorage.setItem(NOTIFICATION_STORAGE_KEY, 'false');
     setNotificationState(prev => ({ ...prev, enabled: false }));
-  }, []);
+    clearTimers();
+  }, [clearTimers]);
 
-  // Show notification
-  const showNotification = useCallback((title: string, options?: NotificationOptions) => {
-    if (Notification.permission === 'granted') {
-      new Notification(title, {
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
-        ...options,
-      });
-    }
-  }, []);
-
-  // Schedule daily notification at 9 PM
+  // Schedule daily notifications with precision
   useEffect(() => {
+    clearTimers();
+    
     if (!notificationState.enabled || Notification.permission !== 'granted') {
       return;
     }
 
     const scheduleNotification = () => {
       const now = new Date();
-      const notificationTime = new Date();
-      notificationTime.setHours(NOTIFICATION_TIME, 0, 0, 0);
-
-      // If 9 PM has passed today, schedule for tomorrow
-      if (now >= notificationTime) {
-        notificationTime.setDate(notificationTime.getDate() + 1);
+      const target = new Date();
+      target.setHours(NOTIFICATION_TIME, 0, 0, 0);
+      
+      // If past 9 PM today, schedule for tomorrow
+      if (now >= target) {
+        target.setDate(target.getDate() + 1);
       }
-
-      const timeUntilNotification = notificationTime.getTime() - now.getTime();
-
-      const timeoutId = setTimeout(() => {
-        showNotification('Time to Track Your Habits! 📊', {
-          body: 'Don\'t forget to log your daily habits and reflection before the day ends.',
+      
+      const delay = target.getTime() - now.getTime();
+      
+      timeoutRef.current = setTimeout(() => {
+        // Professional daily reminder
+        showNotification('Discipline OS', {
+          body: 'Time to track your daily habits and reflect on your progress.',
           tag: 'daily-reminder',
-          requireInteraction: false,
+          requireInteraction: true,
         });
-
-        // Schedule next day's notification
-        const nextDay = new Date();
-        nextDay.setDate(nextDay.getDate() + 1);
-        nextDay.setHours(NOTIFICATION_TIME, 0, 0, 0);
-        const nextDayTime = nextDay.getTime() - Date.now();
         
-        setTimeout(() => {
-          scheduleNotification();
-        }, nextDayTime);
-      }, timeUntilNotification);
-
-      return () => clearTimeout(timeoutId);
+        // Schedule next day
+        scheduleNotification();
+      }, delay);
     };
 
-    const timeoutId = scheduleNotification();
+    scheduleNotification();
 
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [notificationState.enabled, showNotification]);
+    return clearTimers;
+  }, [notificationState.enabled, showNotification, clearTimers]);
 
   return {
     ...notificationState,
@@ -145,5 +157,3 @@ export const useNotifications = () => {
     showNotification,
   };
 };
-
-

@@ -1,26 +1,22 @@
 // Service Worker for Discipline OS 2026
-const CACHE_NAME = 'discipline-os-v1';
+const CACHE_NAME = 'discipline-os-v2';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/favicon.ico',
+  '/og-image.png',
 ];
 
-// Install event - cache resources
+// Install event
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-      .catch((err) => {
-        console.error('Service Worker: Cache failed', err);
-      })
+      .then((cache) => cache.addAll(urlsToCache))
+      .catch(() => {})
   );
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -36,16 +32,12 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
+      .then((response) => response || fetch(event.request))
       .catch(() => {
-        // If both fail, return offline page (optional)
         if (event.request.destination === 'document') {
           return caches.match('/index.html');
         }
@@ -53,15 +45,38 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Background sync for notifications (if needed)
+// Handle notification clicks - professional behavior
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Focus existing window if available
+        for (const client of clientList) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Open new window if none exists
+        if (clients.openWindow) {
+          return clients.openWindow('/');
+        }
+      })
+  );
+});
+
+// Background sync for reliable notifications
 self.addEventListener('sync', (event) => {
   if (event.tag === 'daily-reminder') {
     event.waitUntil(
-      self.registration.showNotification('Time to Track Your Habits! 📊', {
-        body: 'Don\'t forget to log your daily habits and reflection.',
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
+      self.registration.showNotification('Discipline OS', {
+        body: 'Time to track your daily habits and reflect on your progress.',
+        icon: '/og-image.png',
+        badge: '/og-image.png',
         tag: 'daily-reminder',
+        requireInteraction: true,
+        timestamp: Date.now(),
       })
     );
   }
